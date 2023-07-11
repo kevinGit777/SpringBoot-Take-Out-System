@@ -44,6 +44,12 @@ public class EmployeeController {
 		
 		
 		if (employeeFromQuery == null || employeeFromQuery.getPassword().equals(md5Password)) {
+			if(employeeFromQuery == null)
+			{
+				log.debug("login fail due to username not exist.");
+			}else {
+				log.debug("login fail due to password not match.");
+			}
 			return R.error("Login Fail."); // does not contain fail reason for security
 		}
 		
