@@ -58,8 +58,26 @@ public class EmployeeController {
 		}
 		
 		request.getSession().setAttribute("employee", employeeFromQuery.getId());
+		
+		//TODO: add a counter in sql to record the user login count
 		log.info("login success.");
 		return R.success(employeeFromQuery);
+	}
+	
+	
+	/**
+	 * 
+	 * @return success prompt on success, error on employee id not found. 
+	 */
+	@PostMapping("/logout")
+	public R<String> employeeLogout(HttpServletRequest request) {
+		if (request.getSession().getAttribute("employee") == null)
+		{
+			return R.error("Fail to get current user.");
+		}
+		
+		request.getSession().removeAttribute("employee");
+		return R.success("Logout Success!");
 	}
 
 }		
