@@ -43,12 +43,12 @@ public class EmployeeController {
 		Employee employeeFromQuery = employeeService.getOne(queryWrapper);
 		
 		
-		if (employeeFromQuery == null || employeeFromQuery.getPassword().equals(md5Password)) {
+login 		if (employeeFromQuery == null || !employeeFromQuery.getPassword().equals(md5Password)) {
 			if(employeeFromQuery == null)
 			{
-				log.debug("login fail due to username not exist.");
+				log.info("login fail due to username not exist.");
 			}else {
-				log.debug("login fail due to password not match.");
+				log.info("login fail due to password not match.");
 			}
 			return R.error("Login Fail."); // does not contain fail reason for security
 		}
@@ -58,6 +58,7 @@ public class EmployeeController {
 		}
 		
 		request.getSession().setAttribute("employee", employeeFromQuery.getId());
+		log.info("login success.");
 		return R.success(employeeFromQuery);
 	}
 
