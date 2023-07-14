@@ -39,7 +39,7 @@ public class LoginCheckFilter implements Filter {
 			//if is not permitted url and not login yet
 			if( !checkUrlPermitted(requestUrl, permittedUrls) && httpServletRequest.getSession().getAttribute("employee") == null )
 			{
-				
+				log.info("{} has been deniled.", requestUrl );
 				response.getWriter().write( JSON.toJSONString(R.error("NOTLOGIN")));
 				return;
 			}
