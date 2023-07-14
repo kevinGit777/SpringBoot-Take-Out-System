@@ -1,5 +1,7 @@
 package com.myProject.reggie.controller;
 
+import java.time.LocalDateTime;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.myProject.reggie.common.R;
 import com.myProject.reggie.entity.Employee;
 import com.myProject.reggie.service.EmployeeService;
+import com.myProject.reggie.common.Util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +37,7 @@ public class EmployeeController {
 	@PostMapping("/login")
 	public R<Employee> employeeLogin(HttpServletRequest request,  @RequestBody Employee employee) {
 		
-		String md5Password =  DigestUtils.md5DigestAsHex(employee.getPassword().getBytes());
+		String md5Password =  Util.toMD5Password(employee.getPassword());
 		
 		LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
 		
@@ -63,6 +66,9 @@ public class EmployeeController {
 		log.info("login success.");
 		return R.success(employeeFromQuery);
 	}
+
+
+
 	
 	
 	/**
@@ -78,6 +84,30 @@ public class EmployeeController {
 		
 		request.getSession().removeAttribute("employee");
 		return R.success("Logout Success!");
+	}
+	
+	
+	@PostMapping("")
+	public R<String> addEmployee(HttpServletRequest request, @RequestBody Employee employee) {
+		log.info("Add employee with info {}" , employee.toString());
+		
+		String defaultPasswordString = Util.toMD5Password("123456");
+		employee.setPassword(defaultPasswordString);
+		
+		
+		LocalDateTime nowDateTime = LocalDateTime.now();
+		employee.setCreateTime(nowDateTime);
+		employee.setUpdateTime(nowDateTime);
+		
+		Long cur_user = (long) request.getSession().getAttribute("employee"); 
+		employee.setCreateUser(cur_user);
+		employee.setUpdateUser(cur_user);
+		
+		
+		//log.info("Adding user with full info: {}", employee.toString());
+		employeeService.save(employee);
+		
+		return R.success("Create User success");
 	}
 
 }		
