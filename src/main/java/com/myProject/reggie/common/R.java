@@ -6,10 +6,10 @@ import java.util.Map;
 
 
 /***
+ * common class handle the result return from the server to the web client
  * 
  * @author kevin
  *
- * common class handle the result return from the server to the web client
  *
  * @param <T>
  */
