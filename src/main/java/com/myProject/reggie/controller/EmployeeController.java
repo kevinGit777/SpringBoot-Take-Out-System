@@ -6,12 +6,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.myProject.reggie.common.R;
 import com.myProject.reggie.entity.Employee;
 import com.myProject.reggie.service.EmployeeService;
@@ -108,6 +111,32 @@ public class EmployeeController {
 		employeeService.save(employee);
 		
 		return R.success("Create User success");
+	}
+	
+	
+	/**
+	 * 
+	 * @param page
+	 * @param pageSize
+	 * @param name 
+	 * name for employee 
+	 * @return
+	 */
+	@GetMapping("/page")
+	public R<Page> employeeInfoPage(int page, int pageSize, String name) {
+		log.info("Para: page {}, page size {}, name {}", page, pageSize, name);
+		
+		Page employeePage = new Page<>(page, pageSize);
+		
+		LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+		
+		queryWrapper.like(StringUtils.checkValNotNull(name), Employee::getName,name);
+		
+		queryWrapper.orderByDesc(Employee::getUpdateTime);
+		
+		employeeService.page(employeePage, queryWrapper);
+		
+		return R.success(employeePage);
 	}
 
 }		
