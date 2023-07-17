@@ -99,14 +99,14 @@ public class EmployeeController {
 		String defaultPasswordString = Util.toMD5Password("123456");
 		employee.setPassword(defaultPasswordString);
 		
-		
-		LocalDateTime nowDateTime = LocalDateTime.now();
-		employee.setCreateTime(nowDateTime);
-		employee.setUpdateTime(nowDateTime);
-		
-		Long cur_user = (long) request.getSession().getAttribute("employee"); 
-		employee.setCreateUser(cur_user);
-		employee.setUpdateUser(cur_user);
+		// implemented by meta object handeler
+//		LocalDateTime nowDateTime = LocalDateTime.now();
+//		employee.setCreateTime(nowDateTime);
+//		employee.setUpdateTime(nowDateTime);
+//		
+//		Long cur_user = (long) request.getSession().getAttribute("employee"); 
+//		employee.setCreateUser(cur_user);
+//		employee.setUpdateUser(cur_user);
 		
 		
 		//log.info("Adding user with full info: {}", employee.toString());
