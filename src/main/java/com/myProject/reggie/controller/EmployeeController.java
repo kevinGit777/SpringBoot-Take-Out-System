@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -139,4 +141,38 @@ public class EmployeeController {
 		return R.success(employeePage);
 	}
 
+	
+	@PutMapping("")
+	public R<String> updateEmployee(HttpServletRequest request, @RequestBody Employee employee) {
+		
+//		//TODO: add update user check to be admin
+//		LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+//		
+//		queryWrapper.eq(Employee::getUsername, "admin");
+//		
+//		Employee employeeFromQuery = employeeService.getOne(queryWrapper);
+//		
+//		if (employeeFromQuery.getId() != request.getSession().getAttribute("employee")) {
+//			return R.error("Your are not admin, you cannot update user!");
+//		}
+		
+		log.info("Get update request for Employee {}", employee.toString());
+		
+		employee.setUpdateTime(LocalDateTime.now());
+		employee.setUpdateUser((Long) request.getSession().getAttribute("employee") );
+		employeeService.updateById(employee);
+		return R.success(String.format("Successfully update user %s", employee.getName()) );
+	}
+	
+	
+	@GetMapping("{id}")
+	public R<Employee> getEmployeeById(@PathVariable Long id) {
+		log.info("Get employee info with ID {}", id);
+		
+		Employee resEmployee = employeeService.getById(id);
+		if(resEmployee == null) {
+			return R.error("Cannot find ID with " + id.toString());
+		}
+		return R.success( resEmployee);
+	}
 }		
