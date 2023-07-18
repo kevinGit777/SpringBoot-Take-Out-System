@@ -4,8 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +31,7 @@ public class CategoryController {
 	private CategoryServise categoryServise;
 
 	@PostMapping("")
-	public R<String> addCategory(HttpServletRequest request, @RequestBody Category category) {
+	public R<String> addCategory( @RequestBody Category category) {
 		categoryServise.save(category);
 		return R.success("insert success");
 	}
@@ -54,5 +56,22 @@ public class CategoryController {
 		categoryServise.page(categoryPage, queryWrapper);
 		
 		return R.success(categoryPage);
+	}
+	
+	
+	@DeleteMapping("")
+	public R<String> deleteCategory(Long ids) {
+		categoryServise.removeById(ids);
+		return R.success("Removed Category with ID "+ ids.toString());
+	}
+	
+	
+	@PutMapping("")
+	public R<String> UpdateCategory(@RequestBody Category category) {
+		if (categoryServise.updateById(category)) {
+			return R.success( String.format("Update Category with id %s success", category.getId().toString())  );
+		}
+		return R.error("Update Fail");
+		
 	}
 }

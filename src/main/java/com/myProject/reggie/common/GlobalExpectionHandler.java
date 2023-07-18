@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myProject.reggie.CustomExpection.NullCategoryReferenceException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
@@ -18,7 +20,7 @@ public class GlobalExpectionHandler {
 	
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public R<String> SQLConstraintExpectionHandler(SQLIntegrityConstraintViolationException exception) {
-		log.info("Exception of {} with error code {}", exception.getMessage() , exception.getSQLState());
+		log.error("Exception of {} with error code {}", exception.getMessage() , exception.getSQLState());
 		
 		if(exception.getMessage().contains("Duplicate entry") )
 		{
@@ -31,4 +33,12 @@ public class GlobalExpectionHandler {
 		return R.error("Unknown SQL Expection.");
 		
 	}
+	
+	@ExceptionHandler(NullCategoryReferenceException.class)
+	public R<String> nullCategoryReferenceExpectionHandle(NullCategoryReferenceException exception) {
+		log.error("Catch NullCategoryReferenceException with msg {}", exception.getMessage());
+		
+		return R.error(exception.getMessage());
+	}
+	
 }
