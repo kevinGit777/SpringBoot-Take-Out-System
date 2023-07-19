@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.myProject.reggie.CustomExpection.NullCategoryReferenceException;
+import com.myProject.reggie.customExpection.NullCategoryReferenceException;
 
 import lombok.extern.slf4j.Slf4j;
 

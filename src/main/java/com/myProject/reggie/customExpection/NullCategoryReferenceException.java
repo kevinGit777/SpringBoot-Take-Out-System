@@ -1,4 +1,4 @@
-package com.myProject.reggie.CustomExpection;
+package com.myProject.reggie.customExpection;
 
 public class NullCategoryReferenceException extends RuntimeException {
 

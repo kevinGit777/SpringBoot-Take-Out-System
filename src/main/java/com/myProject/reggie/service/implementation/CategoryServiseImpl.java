@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.myProject.reggie.CustomExpection.NullCategoryReferenceException;
+import com.myProject.reggie.customExpection.NullCategoryReferenceException;
 import com.myProject.reggie.entity.Category;
 import com.myProject.reggie.entity.Dish;
 import com.myProject.reggie.entity.Setmeal;
