@@ -1,9 +1,16 @@
 package com.myProject.reggie.controller;
 
+import java.util.Iterator;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myProject.reggie.common.R;
+import com.myProject.reggie.dto.DishDto;
+import com.myProject.reggie.entity.DishFlavor;
 import com.myProject.reggie.service.DishFlavorServise;
 import com.myProject.reggie.service.DishServise;
 
@@ -26,4 +33,11 @@ public class DishController {
 	@Autowired
 	private DishFlavorServise dishFlavorServise;
 
+	@PostMapping("")
+	public R<String> addDish( @RequestBody DishDto dishDto) {
+		
+		dishServise.saveWithFlavor(dishDto);
+	
+		return R.success("got object");
+	}
 }
