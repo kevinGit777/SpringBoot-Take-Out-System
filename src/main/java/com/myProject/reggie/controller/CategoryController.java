@@ -1,5 +1,7 @@
 package com.myProject.reggie.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,4 +71,17 @@ public class CategoryController {
 		return R.error("Update Fail");
 		
 	}
+	
+	@GetMapping("/list")
+	public R<List<Category>> getCategoryList(Category category)
+	{
+		LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+		
+		queryWrapper.eq(category.getType() != null, Category::getType, category.getType());
+		
+		queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+		
+		return R.success(categoryServise.list(queryWrapper)) ;
+	}
+	
 }
