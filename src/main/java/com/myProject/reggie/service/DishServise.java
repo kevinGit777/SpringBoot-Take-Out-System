@@ -8,4 +8,6 @@ public interface DishServise extends IService<Dish> {
 
 	
 	void saveWithFlavor(DishDto dishDto);
+	
+	DishDto getWithFlavor(Long id);
 }

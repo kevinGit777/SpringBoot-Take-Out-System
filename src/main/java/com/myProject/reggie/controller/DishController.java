@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,4 +92,18 @@ public class DishController {
 		return R.success(dishDtoPage);
 		
 	}
+	
+	@GetMapping("/{id}")
+	public R<DishDto> getDishWithFlavor(@PathVariable Long id) {
+		
+		DishDto resDishDto = dishServise.getWithFlavor(id);
+		
+		if( resDishDto != null)
+		return R.success(resDishDto);
+		
+		return R.error("Fail getDishWithFlavor.");
+		
+	}
+
+	
 }

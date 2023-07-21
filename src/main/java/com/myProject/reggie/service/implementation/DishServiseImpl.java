@@ -1,9 +1,11 @@
 package com.myProject.reggie.service.implementation;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.myProject.reggie.dto.DishDto;
 import com.myProject.reggie.entity.Dish;
@@ -30,6 +32,24 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 		
 		dishFlavorServise.saveBatch(dishDto.getFlavors());
 		
+	}
+
+	@Override
+	public DishDto getWithFlavor(Long id) {
+		Dish dish = this.getById(id);
+		
+		DishDto dishDto = new DishDto();
+		
+		BeanUtils.copyProperties(dish, dishDto);
+		
+		LambdaQueryWrapper< DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+		
+		queryWrapper.eq(DishFlavor::getDishId, id);
+	
+		
+		dishDto.setFlavors(dishFlavorServise.list(queryWrapper) );
+		
+		return dishDto;
 	}
 	
 	
