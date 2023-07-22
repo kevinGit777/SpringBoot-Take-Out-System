@@ -14,6 +14,8 @@ import com.myProject.reggie.mapper.DishMapper;
 import com.myProject.reggie.service.DishFlavorServise;
 import com.myProject.reggie.service.DishServise;
 
+import java.util.List;
+
 @Service
 public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements DishServise {
 
@@ -22,7 +24,7 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 	
 	@Override
 	@Transactional
-	public void saveWithFlavor(DishDto dishDto) {
+	public boolean saveWithFlavor(DishDto dishDto) {
 		this.save(dishDto);
 		
 		
@@ -30,11 +32,12 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 			flavor.setDishId( dishDto.getId());
 		}
 		
-		dishFlavorServise.saveBatch(dishDto.getFlavors());
+		return dishFlavorServise.saveBatch(dishDto.getFlavors());
 		
 	}
 
 	@Override
+	@Transactional
 	public DishDto getWithFlavor(Long id) {
 		Dish dish = this.getById(id);
 		
@@ -51,6 +54,31 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 		
 		return dishDto;
 	}
+
+	@Override
+	@Transactional
+	public boolean updateWithFlavor(DishDto dishDto) {
+		// TODO Auto-generated method stub
+		
+		this.updateById(dishDto);
+		
+		
+		//update Flavor by first remove all flavor, then insert the report one
+		LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+		
+		lambdaQueryWrapper.eq(DishFlavor::getDishId, dishDto.getId());
+		
+		dishFlavorServise.remove(lambdaQueryWrapper);
+		
+		for (DishFlavor flavor: dishDto.getFlavors())
+		{
+			flavor.setDishId(  dishDto.getId());
+		}
+		
+		return dishFlavorServise.saveBatch(dishDto.getFlavors());
+	}
+	
+	
 	
 	
 

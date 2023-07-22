@@ -7,7 +7,9 @@ import com.myProject.reggie.entity.Dish;
 public interface DishServise extends IService<Dish> {
 
 	
-	void saveWithFlavor(DishDto dishDto);
+	boolean saveWithFlavor(DishDto dishDto);
 	
 	DishDto getWithFlavor(Long id);
+	
+	boolean updateWithFlavor(DishDto dishDto);
 }
