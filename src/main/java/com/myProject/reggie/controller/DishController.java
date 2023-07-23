@@ -144,5 +144,21 @@ public class DishController {
 		
 		
 	}
+	
+	@GetMapping("/list")
+	public R<List<Dish>> getDishByCategoryId(Long categoryId) {
+		
+		LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+		
+		queryWrapper.eq(Dish::getCategoryId, categoryId);
+		
+		List<Dish> resDishs = dishServise.list(queryWrapper);
+		
+		if(resDishs == null)
+			return R.error("Error at /dish/list");
+		
+		return R.success(resDishs);
+	
+	}
 
 }
