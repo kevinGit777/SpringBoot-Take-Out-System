@@ -132,6 +132,7 @@ public class DishController {
 	@DeleteMapping("")
 	public R<String> deleteDish(Long[] ids) {
 
+		//TODO: add dish status check 
 		for (Long id : ids)
 		{
 			if (!dishServise.removeById(id)) {
