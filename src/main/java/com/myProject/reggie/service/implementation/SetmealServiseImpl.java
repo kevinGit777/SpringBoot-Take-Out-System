@@ -28,11 +28,10 @@ public class SetmealServiseImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
 		for (SetmealDish dish : setmealDto.getSetmealDishes()) {
 			dish.setSetmealId(setmealDto.getId());
-			if (!setmealDishServise.save(dish)) {
-				return false;
-			}
+
 		}
 
+		setmealDishServise.saveBatch(setmealDto.getSetmealDishes());
 		return true;
 	}
 
