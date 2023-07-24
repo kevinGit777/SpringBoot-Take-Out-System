@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.myProject.reggie.dto.SetmealDto;
 import com.myProject.reggie.entity.Setmeal;
@@ -32,6 +33,31 @@ public class SetmealServiseImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 			}
 		}
 
+		return true;
+	}
+
+	@Override
+	@Transactional
+	public boolean updateWithDish(SetmealDto setmealDto) {		
+		// remove all setmeal dish then add back
+		
+		this.updateById(setmealDto);
+	
+		
+		LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+		
+		queryWrapper.eq(SetmealDish::getSetmealId, setmealDto.getId());
+		setmealDishServise.remove(queryWrapper);
+		
+		for (SetmealDish dish : setmealDto.getSetmealDishes()) {
+			dish.setSetmealId(setmealDto.getId());
+			if (!setmealDishServise.save(dish)) {
+				return false;
+			}
+		}
+		
+		
+		
 		return true;
 	}
 

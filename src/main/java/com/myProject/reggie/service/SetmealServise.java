@@ -7,4 +7,6 @@ import com.myProject.reggie.entity.Setmeal;
 public interface SetmealServise extends IService<Setmeal> {
 
 	boolean saveWithDish(SetmealDto setmealDto);
+	
+	boolean updateWithDish(SetmealDto setmealDto);
 }
