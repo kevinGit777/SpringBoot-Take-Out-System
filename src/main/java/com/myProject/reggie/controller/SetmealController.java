@@ -1,22 +1,26 @@
 package com.myProject.reggie.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.myProject.reggie.common.R;
+import com.myProject.reggie.customExpection.ItemActiveException;
 import com.myProject.reggie.dto.SetmealDto;
 import com.myProject.reggie.entity.Dish;
 import com.myProject.reggie.entity.Setmeal;
@@ -40,6 +44,9 @@ public class SetmealController {
 
 	@Autowired
 	CategoryServise categoryServise;
+
+	@Autowired
+	CommonController commonController;
 
 	@PostMapping("")
 	public R<String> addSetMeal(@RequestBody SetmealDto setmealDto) {
@@ -111,9 +118,9 @@ public class SetmealController {
 		return R.success(setmealDto);
 
 	}
-	
+
 	@PostMapping("/status/{status}")
-	public R<String> changeStatus(Long[] ids, @PathVariable int status) {
+	public R<String> changeStatus(@RequestParam List<Long> ids, @PathVariable int status) {
 
 		for (Long id : ids) {
 			Setmeal setmeal = setmealServise.getById(id);
@@ -125,6 +132,28 @@ public class SetmealController {
 
 		return R.success("Status has updated to " + status);
 
+	}
+
+	@DeleteMapping("")
+	public R<String> deleteSetmeal(@RequestParam List<Long> ids) {
+
+		for (Long id : ids) {
+			if (setmealServise.getById(id).getStatus() == 1) {
+				throw new ItemActiveException("Current Setmeal is availiable for customer.");
+
+			}
+		}
+
+		List<String> imgLocationStrings = ids.stream().map((id) -> {
+
+			return setmealServise.getById(id).getImage();
+		}).collect(Collectors.toList());
+		
+		setmealServise.removeByIds(ids);
+
+		commonController.deleteImages(imgLocationStrings);
+
+		return R.success("Item with " + ids + " has been Remvoed");
 	}
 
 }
