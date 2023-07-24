@@ -18,6 +18,7 @@ import com.myProject.reggie.service.DishServise;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements DishServise {
@@ -25,8 +26,6 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 	@Autowired
 	private DishFlavorServise dishFlavorServise;
 	
-	@Autowired
-	private CommonController commonController;
 	
 	@Override
 	@Transactional
@@ -93,7 +92,7 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 		
 		lambdaQueryWrapper.in(DishFlavor::getDishId, idList);
 		
-		
+
 		dishFlavorServise.remove(lambdaQueryWrapper);
 		return super.removeByIds(idList);
 	}

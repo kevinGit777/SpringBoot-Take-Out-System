@@ -49,6 +49,9 @@ public class DishController {
 	@Autowired
 	private CategoryServise categoryServise;
 
+	@Autowired
+	private CommonController commonController;
+
 	@PostMapping("")
 	public R<String> addDish(@RequestBody DishDto dishDto) {
 
@@ -140,12 +143,19 @@ public class DishController {
 			}
 		}
 
-		if (dishServise.removeByIds(ids)) {
-			return R.success("Item has been Remvoed");
+		if (!dishServise.removeByIds(ids)) {
+			return R.error("Sonthing is wrong with removing.");
 
 		}
 
-		return R.error("Sonthing is wrong with removing.");
+		List<String> imgLocations = ids.stream().map((id) -> {
+			return dishServise.getById(id).getImage();
+
+		}).collect(Collectors.toList());
+
+		commonController.deleteImages(imgLocations);
+
+		return R.success("Item has been Remvoed");
 
 	}
 
