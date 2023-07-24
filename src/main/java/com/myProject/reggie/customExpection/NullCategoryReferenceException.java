@@ -9,7 +9,6 @@ public class NullCategoryReferenceException extends RuntimeException {
 
 	public NullCategoryReferenceException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 
