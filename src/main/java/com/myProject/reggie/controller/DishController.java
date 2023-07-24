@@ -139,7 +139,9 @@ public class DishController {
 
 		for (Long id : ids) {
 			if (dishServise.getById(id).getStatus().equals(1)) {
-				throw new ItemActiveException("Current dish is still availiabel to customers.");
+				throw new ItemActiveException("Dish "
+						+ dishServise.getById(id).getName()
+						+ " is still availiabel to customers.");
 			}
 		}
 

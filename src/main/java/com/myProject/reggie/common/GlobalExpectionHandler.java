@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myProject.reggie.customExpection.ItemActiveException;
 import com.myProject.reggie.customExpection.NullCategoryReferenceException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +41,12 @@ public class GlobalExpectionHandler {
 		
 		return R.error(exception.getMessage());
 	}
+
+	@ExceptionHandler(ItemActiveException.class)
+	public R<String> ItemActiveExceptionHandle(NullCategoryReferenceException exception) {
+		log.error("Catch ItemActiveException with msg {}", exception.getMessage());
+		return R.error(exception.getMessage());
+	}
+	
 	
 }
