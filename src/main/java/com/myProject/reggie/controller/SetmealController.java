@@ -139,7 +139,9 @@ public class SetmealController {
 
 		for (Long id : ids) {
 			if (setmealServise.getById(id).getStatus() == 1) {
-				throw new ItemActiveException("Current Setmeal is availiable for customer.");
+				throw new ItemActiveException("Setmeal "
+						+ setmealServise.getById(id).getName()
+						+ " is availiable for customer.");
 
 			}
 		}
