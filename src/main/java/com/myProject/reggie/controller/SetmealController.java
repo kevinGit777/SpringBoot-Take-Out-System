@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.myProject.reggie.common.R;
 import com.myProject.reggie.dto.SetmealDto;
+import com.myProject.reggie.entity.Dish;
 import com.myProject.reggie.entity.Setmeal;
 import com.myProject.reggie.entity.SetmealDish;
 import com.myProject.reggie.service.CategoryServise;
@@ -108,6 +109,21 @@ public class SetmealController {
 		setmealDto.setSetmealDishes(setmealDishServise.list(queryWrapper));
 
 		return R.success(setmealDto);
+
+	}
+	
+	@PostMapping("/status/{status}")
+	public R<String> changeStatus(Long[] ids, @PathVariable int status) {
+
+		for (Long id : ids) {
+			Setmeal setmeal = setmealServise.getById(id);
+			setmeal.setStatus(status);
+			if (!setmealServise.updateById(setmeal)) {
+				return R.error("Something is wrong at status changing.");
+			}
+		}
+
+		return R.success("Status has updated to " + status);
 
 	}
 
