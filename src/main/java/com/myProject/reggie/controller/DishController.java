@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.myProject.reggie.common.R;
+import com.myProject.reggie.customExpection.ItemActiveException;
 import com.myProject.reggie.dto.DishDto;
 import com.myProject.reggie.entity.Category;
 import com.myProject.reggie.entity.Dish;
@@ -130,36 +132,37 @@ public class DishController {
 	}
 
 	@DeleteMapping("")
-	public R<String> deleteDish(Long[] ids) {
+	public R<String> deleteDish(@RequestParam List<Long> ids) {
 
-		//TODO: add dish status check 
-		for (Long id : ids)
-		{
-			if (!dishServise.removeById(id)) {
-				return R.error("Sonthing is wrong with removing.");
+		for (Long id : ids) {
+			if (dishServise.getById(id).getStatus().equals(1)) {
+				throw new ItemActiveException("Current dish is still availiabel to customers.");
 			}
+		}
+
+		if (dishServise.removeByIds(ids)) {
+			return R.success("Item has been Remvoed");
 
 		}
-		return R.success("Item with " + Arrays.toString( ids) + " has been Remvoed");
 
-		
-		
+		return R.error("Sonthing is wrong with removing.");
+
 	}
-	
+
 	@GetMapping("/list")
 	public R<List<Dish>> getDishByCategoryId(Long categoryId) {
-		
+
 		LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
-		
+
 		queryWrapper.eq(Dish::getCategoryId, categoryId);
-		
+
 		List<Dish> resDishs = dishServise.list(queryWrapper);
-		
-		if(resDishs == null)
+
+		if (resDishs == null)
 			return R.error("Error at /dish/list");
-		
+
 		return R.success(resDishs);
-	
+
 	}
 
 }

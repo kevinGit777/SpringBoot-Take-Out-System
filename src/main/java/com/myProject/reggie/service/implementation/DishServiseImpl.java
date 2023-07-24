@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.myProject.reggie.controller.CommonController;
 import com.myProject.reggie.dto.DishDto;
 import com.myProject.reggie.entity.Dish;
 import com.myProject.reggie.entity.DishFlavor;
@@ -14,6 +15,8 @@ import com.myProject.reggie.mapper.DishMapper;
 import com.myProject.reggie.service.DishFlavorServise;
 import com.myProject.reggie.service.DishServise;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -21,6 +24,9 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
 	@Autowired
 	private DishFlavorServise dishFlavorServise;
+	
+	@Autowired
+	private CommonController commonController;
 	
 	@Override
 	@Transactional
@@ -76,6 +82,20 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 		}
 		
 		return dishFlavorServise.saveBatch(dishDto.getFlavors());
+	}
+	
+	@Override
+	@Transactional
+	public boolean removeByIds(Collection<? extends Serializable> idList) {
+		//delete with flavors
+		
+		LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+		
+		lambdaQueryWrapper.in(DishFlavor::getDishId, idList);
+		
+		
+		dishFlavorServise.remove(lambdaQueryWrapper);
+		return super.removeByIds(idList);
 	}
 	
 	
