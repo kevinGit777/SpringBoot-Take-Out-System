@@ -3,6 +3,7 @@ package com.myProject.reggie.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.ServletOutputStream;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.myProject.reggie.common.R;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,7 +55,7 @@ public class CommonController {
 	
 	/**
 	 * 
-	 * return of this method has been hendel by the respond.outputstream
+	 * return of this method has been handle by the respond.outputstream
 	 * 
 	 * @param name
 	 * @param response
@@ -85,6 +85,18 @@ public class CommonController {
 		} catch (IOException e) {
 			e.printStackTrace();
 			//return R.error("File reading error.");
+		}
+		
+		
+	}
+	
+	
+	
+	protected void deleteImages(List<String> imgLocations) {
+		
+		for (String imgLocation : imgLocations)
+		{
+			new File(imageLocationBasePath + "\\" + imgLocation).delete();
 		}
 		
 		
