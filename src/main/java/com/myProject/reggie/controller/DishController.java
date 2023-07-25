@@ -137,14 +137,6 @@ public class DishController {
 	@DeleteMapping("")
 	public R<String> deleteDish(@RequestParam List<Long> ids) {
 
-		for (Long id : ids) {
-			if (dishServise.getById(id).getStatus().equals(1)) {
-				throw new ItemActiveException("Dish "
-						+ dishServise.getById(id).getName()
-						+ " is still availiabel to customers.");
-			}
-		}
-
 		if (!dishServise.removeByIds(ids)) {
 			return R.error("Sonthing is wrong with removing.");
 

@@ -2,8 +2,6 @@ package com.myProject.reggie.customExpection;
 
 public class ItemActiveException extends RuntimeException {
 
-
-
 	/**
 	 * Auto generate serialVersionID
 	 */

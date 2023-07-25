@@ -3,6 +3,7 @@ package com.myProject.reggie.common;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,40 +14,37 @@ import com.myProject.reggie.customExpection.NullCategoryReferenceException;
 
 import lombok.extern.slf4j.Slf4j;
 
-@ControllerAdvice(annotations = {RestController.class, Controller.class})
+@ControllerAdvice(annotations = { RestController.class, Controller.class })
 @ResponseBody
 @Slf4j
 public class GlobalExpectionHandler {
 
-	
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	public R<String> SQLConstraintExpectionHandler(SQLIntegrityConstraintViolationException exception) {
-		log.error("Exception of {} with error code {}", exception.getMessage() , exception.getSQLState());
-		
-		if(exception.getMessage().contains("Duplicate entry") )
-		{
-			
+		log.error("Exception of {} with error code {}", exception.getMessage(), exception.getSQLState());
+
+		if (exception.getMessage().contains("Duplicate entry")) {
+
 			String usernameString = exception.getMessage().split(" ")[2];
-			return R.error(String.format("%s has been used. Please enter another one.", usernameString) );
-			
+			return R.error(String.format("%s has been used. Please enter another one.", usernameString));
+
 		}
-		
+
 		return R.error("Unknown SQL Expection.");
-		
+
 	}
-	
+
 	@ExceptionHandler(NullCategoryReferenceException.class)
 	public R<String> nullCategoryReferenceExpectionHandle(NullCategoryReferenceException exception) {
 		log.error("Catch NullCategoryReferenceException with msg {}", exception.getMessage());
-		
+
 		return R.error(exception.getMessage());
 	}
 
 	@ExceptionHandler(ItemActiveException.class)
-	public R<String> ItemActiveExceptionHandle(NullCategoryReferenceException exception) {
+	public R<String> ItemActiveExceptionHandle(ItemActiveException exception) {
 		log.error("Catch ItemActiveException with msg {}", exception.getMessage());
 		return R.error(exception.getMessage());
 	}
-	
-	
+
 }

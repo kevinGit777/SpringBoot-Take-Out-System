@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.myProject.reggie.controller.CommonController;
+import com.myProject.reggie.customExpection.ItemActiveException;
 import com.myProject.reggie.dto.DishDto;
 import com.myProject.reggie.entity.Dish;
 import com.myProject.reggie.entity.DishFlavor;
@@ -17,8 +17,6 @@ import com.myProject.reggie.service.DishServise;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements DishServise {
@@ -87,6 +85,15 @@ public class DishServiseImpl extends ServiceImpl<DishMapper, Dish> implements Di
 	@Transactional
 	public boolean removeByIds(Collection<? extends Serializable> idList) {
 		//delete with flavors
+		
+		for (Serializable id : idList) {
+			if (this.getById(id).getStatus().equals(1)) {
+				throw new ItemActiveException("Dish "
+						+ this.getById(id).getName()
+						+ " is still availiabel to customers.");
+			}
+		}
+
 		
 		LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
 		
