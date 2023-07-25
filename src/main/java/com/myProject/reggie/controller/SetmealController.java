@@ -77,6 +77,7 @@ public class SetmealController {
 
 		LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.like(name != null, Setmeal::getName, name);
+		queryWrapper.orderByDesc(Setmeal::getUpdateTime);
 
 		setmealServise.page(setmealPage, queryWrapper);
 
