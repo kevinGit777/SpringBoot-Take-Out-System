@@ -64,10 +64,10 @@ public class LoginCheckFilter implements Filter {
 				Util.setCurId((Long) httpServletRequest.getSession().getAttribute(attribute), attribute);
 				return true;
 			}
-			return false;
+			
 		}
-
-		return httpServletRequest.getSession().getAttribute("employee") == null;
+		return false;
+		
 	}
 
 	boolean checkUrlPermitted(String requestUrl, String[] permittedUrls) {
