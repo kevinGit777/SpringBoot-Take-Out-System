@@ -22,40 +22,57 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @WebFilter(filterName = "LoginCheckFilter", urlPatterns = "/*")
 public class LoginCheckFilter implements Filter {
-	
+
 	static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
-	
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		// TODO Auto-generated method stub
-			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-			String requestUrl =  httpServletRequest.getRequestURI();
-			
-			log.info("Interceped request at: {}", requestUrl);
-			
-			String[] permittedUrls = { "/employee/login", "/employee/logout", "/backend/**", "/front/**"};
-			
-			//if is not permitted url and not login yet
-			if( !checkUrlPermitted(requestUrl, permittedUrls) && httpServletRequest.getSession().getAttribute("employee") == null )
-			{
-				log.info("{} has been deniled.", requestUrl );
-				response.getWriter().write( JSON.toJSONString(R.error("NOTLOGIN")));
-				return;
-			}
-			
-			Util.setCurUserEmployeeId( (Long) httpServletRequest.getSession().getAttribute("employee"));
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		String requestUrl = httpServletRequest.getRequestURI();
+
+		log.info("Interceped request at: {}", requestUrl);
+
+		String[] permittedUrls = { "/employee/login", "/employee/logout", "/backend/**", "/front/**", "/user/login",
+				"user/logout", "/user/validatecode" };
+
+		if (checkUrlPermitted(requestUrl, permittedUrls)) {
 			chain.doFilter(httpServletRequest, httpServletResponse);
+			return;
+		}
+
+		if (checkUserLogin(httpServletRequest)) {
+			chain.doFilter(httpServletRequest, httpServletResponse);
+			return;
+		}
+
+		log.info("{} has been deniled.", requestUrl);
+		response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
+
 	}
-	
-	
-	boolean checkUrlPermitted(String requestUrl, String[] permittedUrls)
-	{
-		for(String permitted : permittedUrls)
-		{
-			if( PATH_MATCHER.match(permitted, requestUrl) )
-			{
+
+	/**
+	 * @param httpServletRequest
+	 * @return
+	 */
+	private boolean checkUserLogin(HttpServletRequest httpServletRequest) {
+
+		String[] attributes = { "employee", "user" };
+		for (String attribute : attributes) {
+			if (httpServletRequest.getSession().getAttribute(attribute) != null) {
+				Util.setCurId((Long) httpServletRequest.getSession().getAttribute(attribute), attribute);
+				return true;
+			}
+			return false;
+		}
+
+		return httpServletRequest.getSession().getAttribute("employee") == null;
+	}
+
+	boolean checkUrlPermitted(String requestUrl, String[] permittedUrls) {
+		for (String permitted : permittedUrls) {
+			if (PATH_MATCHER.match(permitted, requestUrl)) {
 				return true;
 			}
 		}
