@@ -71,9 +71,12 @@ public class UserController {
 			curUser.setPhone("13312345678");
 			
 			userServise.save(curUser);
-
+			curUser = userServise.getOne(queryWrapper);
 		}
-
+		
+		session.setAttribute("user", curUser.getId());
+		
+		
 		return R.success(curUser);
 
 	}
