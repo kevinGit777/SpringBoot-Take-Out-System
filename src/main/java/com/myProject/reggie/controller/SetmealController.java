@@ -101,6 +101,39 @@ public class SetmealController {
 		return R.success(setmealDtoPage);
 
 	}
+	
+	@GetMapping("/list")
+	public R<List<SetmealDto>> getDishByCategoryId(Long categoryId, Integer status) {
+		
+		//log.info( "recieve id: "+ categoryId   );
+
+		LambdaQueryWrapper<Setmeal> SetmealQueryWrapper = new LambdaQueryWrapper<>();
+		//List<SetmealDto> setmealDtoList = new 
+
+		SetmealQueryWrapper.eq(Setmeal::getCategoryId, categoryId);
+		SetmealQueryWrapper.eq(Setmeal::getStatus, status);
+		
+		List<SetmealDto> setmealDtoList = setmealServise.list(SetmealQueryWrapper).stream().map((setmeal) ->{
+			
+			SetmealDto setmealDto = new SetmealDto();
+
+			BeanUtils.copyProperties(setmeal, setmealDto);
+			
+			String categoryNameString = categoryServise.getById(setmeal.getCategoryId()).getName();
+			
+			setmealDto.setCategoryName(categoryNameString);
+			
+			return setmealDto;
+		}).collect(Collectors.toList());
+		
+		
+		if (setmealDtoList == null)
+			return R.error("Error at /setmeal/list");
+
+
+		return R.success(setmealDtoList);
+
+	}
 
 	@GetMapping("/{id}")
 	public R<SetmealDto> getSetMeal(@PathVariable Long id) {
@@ -158,5 +191,7 @@ public class SetmealController {
 
 		return R.success("Item with " + ids + " has been Remvoed");
 	}
+	
+
 
 }
