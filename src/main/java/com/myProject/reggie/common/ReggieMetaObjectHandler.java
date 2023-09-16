@@ -23,7 +23,12 @@ public class ReggieMetaObjectHandler implements MetaObjectHandler {
 		metaObject.setValue("createTime", nowDateTime);
 		metaObject.setValue("updateTime", nowDateTime);
 		
-		Long cur_userLong = Util.getCurUserEmployeeId();
+		Long cur_userLong = Util.getCurEmployeeId();
+		
+		if(cur_userLong == null)
+		{
+			cur_userLong = Util.getCurUserId();
+		}
 		
 		metaObject.setValue("createUser", cur_userLong);
 		metaObject.setValue("updateUser", cur_userLong);
@@ -35,7 +40,7 @@ public class ReggieMetaObjectHandler implements MetaObjectHandler {
 		log.info("updateing " + metaObject.getOriginalObject().toString());
 		metaObject.setValue("updateTime", LocalDateTime.now());
 
-		metaObject.setValue("updateUser", Util.getCurUserEmployeeId());
+		metaObject.setValue("updateUser", Util.getCurEmployeeId() == null ? Util.getCurUserId() : Util.getCurEmployeeId() );
 		
 		
 	}
