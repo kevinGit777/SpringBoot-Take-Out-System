@@ -14,3 +14,10 @@ function loginoutApi() {
 }
 
   
+function GetValidationCodeApi(data) {
+  return $axios({
+    'url': '/user/validatecode',
+    'method' : 'get',
+   	params:{...data}
+  })
+}
