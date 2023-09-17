@@ -103,23 +103,26 @@ public class SetmealController {
 	}
 	
 	@GetMapping("/list")
-	public R<List<SetmealDto>> getDishByCategoryId(Long categoryId, Integer status) {
+	public R<List<SetmealDto>> getSetmealList(Setmeal setmeal ) {
 		
 		//log.info( "recieve id: "+ categoryId   );
 
 		LambdaQueryWrapper<Setmeal> SetmealQueryWrapper = new LambdaQueryWrapper<>();
 		//List<SetmealDto> setmealDtoList = new 
+		 Long categoryId = setmeal.getCategoryId();
+		 Integer status = setmeal.getStatus();
 
-		SetmealQueryWrapper.eq(Setmeal::getCategoryId, categoryId);
-		SetmealQueryWrapper.eq(Setmeal::getStatus, status);
+		SetmealQueryWrapper.eq(categoryId != null, Setmeal::getCategoryId, categoryId);
+		SetmealQueryWrapper.eq(status!= null,  Setmeal::getStatus, status);
+		SetmealQueryWrapper.orderByDesc(Setmeal::getUpdateTime);
 		
-		List<SetmealDto> setmealDtoList = setmealServise.list(SetmealQueryWrapper).stream().map((setmeal) ->{
+		List<SetmealDto> setmealDtoList = setmealServise.list(SetmealQueryWrapper).stream().map((setmeal_res) ->{
 			
 			SetmealDto setmealDto = new SetmealDto();
 
-			BeanUtils.copyProperties(setmeal, setmealDto);
+			BeanUtils.copyProperties(setmeal_res, setmealDto);
 			
-			String categoryNameString = categoryServise.getById(setmeal.getCategoryId()).getName();
+			String categoryNameString = categoryServise.getById(setmeal_res.getCategoryId()).getName();
 			
 			setmealDto.setCategoryName(categoryNameString);
 			

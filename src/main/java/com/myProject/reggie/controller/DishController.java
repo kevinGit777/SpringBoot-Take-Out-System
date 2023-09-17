@@ -23,6 +23,7 @@ import com.myProject.reggie.customExpection.ItemActiveException;
 import com.myProject.reggie.dto.DishDto;
 import com.myProject.reggie.entity.Category;
 import com.myProject.reggie.entity.Dish;
+import com.myProject.reggie.entity.DishFlavor;
 import com.myProject.reggie.service.CategoryServise;
 import com.myProject.reggie.service.DishFlavorServise;
 import com.myProject.reggie.service.DishServise;
@@ -154,13 +155,29 @@ public class DishController {
 	}
 
 	@GetMapping("/list")
-	public R<List<Dish>> getDishByCategoryId(Long categoryId) {
+	public R<List<DishDto>> getDishByCategoryId(Long categoryId, Integer status) {
 
 		LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
 
 		queryWrapper.eq(Dish::getCategoryId, categoryId);
+		
+		queryWrapper.eq(status != null, Dish::getStatus, status);
 
-		List<Dish> resDishs = dishServise.list(queryWrapper);
+		List<DishDto> resDishs = dishServise.list(queryWrapper).stream().map((dish) ->{
+			DishDto dto = new DishDto();
+			BeanUtils.copyProperties(dish, dto);
+			
+			LambdaQueryWrapper<DishFlavor> flavorQueryWrapper = new LambdaQueryWrapper<>();
+			flavorQueryWrapper.eq(DishFlavor::getDishId, dto.getId());
+			
+			Category category = categoryServise.getById(dish.getCategoryId());
+			
+			dto.setCategoryName(category.getName());
+			dto.setFlavors( dishFlavorServise.list(flavorQueryWrapper));
+			
+			
+			return dto;
+		}).collect(Collectors.toList());
 
 		if (resDishs == null)
 			return R.error("Error at /dish/list");
