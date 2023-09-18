@@ -3,6 +3,8 @@ package com.myProject.reggie.common;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.DigestUtils;
 
+import com.myProject.reggie.entity.AddressBook;
+
 public class Util {
 	
 	//to help meta object handler get employeeID
@@ -50,6 +52,27 @@ public class Util {
 	
 	 static Long getCurUserId() {
 		return curUserId.get();
+	}
+	 
+	 public static String getFulAddress(AddressBook addressBook) {
+		
+		 StringBuilder sb = new StringBuilder();
+		 
+		 
+		 String provinceName = addressBook.getProvinceName() == null ? "" :addressBook.getProvinceName();
+		 sb.append(provinceName);
+		 
+		 String cityName = addressBook.getCityName() == null ? "" : addressBook.getCityName();
+		 sb.append(cityName);
+		 
+		 String districtString = addressBook.getDistrictName() == null? "" : addressBook.getDistrictName();
+		 sb.append(districtString);
+		 
+		 String detailString = addressBook.getDetail() == null? "" : addressBook.getDetail();
+		 
+		 sb.append(detailString);
+		 
+		 return sb.toString();
 	}
 	
 	
