@@ -16,9 +16,10 @@ public class Orders implements Serializable {
 
     private Long id;
 
+    //order id in string
     private String number;
 
-    //refer to the status enum 
+    //refer to the status consts 
     private Integer status;
 
 
@@ -49,9 +50,18 @@ public class Orders implements Serializable {
 
     private String address;
 
+    //name of people to be deliver
     private String consignee;
     
-    public enum Status{TO_BE_PAID, TO_BE_DELIEVER, DELEVERED, COMPELETED, CANCELED};
+    public final static int TO_BE_PAID = 1 ;
+
+    public static final int TO_BE_DELIEVER = 2;
+
+    public static final int DELEVERED = 3;
+
+    public static final int COMPELETED=4;
+
+    public static final int CANCELED = 5;
     
     
 }
