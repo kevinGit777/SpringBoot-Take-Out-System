@@ -16,7 +16,9 @@ import java.util.Map;
 @Data
 public class R<T> {
 
-    private Integer code; //encoded result, 1 success, 0 and other is fail
+	/**encoded result, 1 success, 0 and other is fail
+	**/
+    private Integer code; 
 
     private String msg; //error message
 
