@@ -57,7 +57,7 @@ public class UserController {
 		}
 
 		log.info("User login success.");
-		session.setAttribute("user", emailString);
+		//session.setAttribute("user", emailString);
 
 		LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(User::getEmail, emailString);
