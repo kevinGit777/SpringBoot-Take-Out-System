@@ -1,12 +1,14 @@
 package com.myProject.reggie.controller;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,12 +34,14 @@ public class UserController {
 
 	@Autowired
 	private UserServise userServise;
+	
+	@Autowired
+	private RedisTemplate redisTemplate;
 
 	@GetMapping("/validatecode")
 	public R<String> ValidationCode(String email, HttpSession session) {
 		String validateCode = ValidateCodeUtils.generateValidateCode4String(4);
-		session.setAttribute(email, validateCode);
-		
+		redisTemplate.opsForValue().set(email, validateCode, 5, TimeUnit.MINUTES );
 		
 		emailServise.SendValicationCode(validateCode, email);
 
@@ -47,15 +51,22 @@ public class UserController {
 	@PostMapping("/login")
 	public R<User> login(@RequestBody Map<String, String> map, HttpSession session, HttpServletRequest request) {
 		String emailString = map.get("email");
-		if (session.getAttribute(emailString) == null) {
+		
+		String expectedCode = (String) redisTemplate.opsForValue().get(emailString);
+		
+		
+		if (expectedCode == null) {
 			return R.error("Please request validation code first.");
 		}
 
-		if (!StringUtils.equals(session.getAttribute(emailString).toString(), map.get("code"))) {
+		
+		if( !StringUtils.equals( expectedCode , map.get("code")) )
+		{
 			return R.error("Login Fail.");
-
 		}
-
+		
+		
+		redisTemplate.delete(emailString);
 		log.info("User login success.");
 		//session.setAttribute("user", emailString);
 
