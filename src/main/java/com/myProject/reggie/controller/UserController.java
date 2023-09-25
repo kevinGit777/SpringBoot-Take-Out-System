@@ -36,7 +36,7 @@ public class UserController {
 	private UserServise userServise;
 	
 	@Autowired
-	private RedisTemplate redisTemplate;
+	private RedisTemplate<String, String> redisTemplate;
 
 	@GetMapping("/validatecode")
 	public R<String> ValidationCode(String email, HttpSession session) {
@@ -52,7 +52,7 @@ public class UserController {
 	public R<User> login(@RequestBody Map<String, String> map, HttpSession session, HttpServletRequest request) {
 		String emailString = map.get("email");
 		
-		String expectedCode = (String) redisTemplate.opsForValue().get(emailString);
+		String expectedCode = redisTemplate.opsForValue().get(emailString);
 		
 		
 		if (expectedCode == null) {
